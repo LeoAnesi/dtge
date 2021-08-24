@@ -1,0 +1,1 @@
+{"project_name":"dtge","generateAPIPlatform":false,"generateDjango":false,"generateNestJS":true,"generateReact":true,"generateEB":false,"generateReactNative":false,"app_port":"3000","cleanProjectName":"dtge","refresh_token":"refreshToken","access_token_minutes_to_live":10,"refresh_token_minutes_to_live":525600,"nest":{"logFile":"nest.log"}}
