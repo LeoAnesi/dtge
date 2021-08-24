@@ -12,7 +12,7 @@ class EnvironmentVariables {
   NODE_ENV!: Environment;
 
   @IsNumber()
-  SERVER_PORT!: number;
+  PORT!: number;
 
   @IsString()
   SECRET_KEY!: string;

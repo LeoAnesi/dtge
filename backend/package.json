@@ -4,8 +4,11 @@
   "description": "description",
   "author": "AleBlondin",
   "license": "MIT",
+  "engines": {
+    "node": "14.x"
+  },
   "scripts": {
-    "build": ". ./.env.rc && nest build -p tsconfig.build.json",
+    "build": "nest build -p tsconfig.build.json",
     "format": "prettier --write \"src/**/*.ts\"",
     "build:migrations": "nest build -p tsconfig.migration.json",
     "premigration:generate": "yarn build:migrations",
@@ -13,6 +16,7 @@
     "migration:revert": ". ./.env.rc && typeorm migration:revert",
     "premigration:run": "yarn build:migrations",
     "migration:run": ". ./.env.rc && typeorm migration:run",
+    "migration:run:production": "typeorm migration:run",
     "test:migration:run": ". ./.env.test.rc && ts-node -r tsconfig-paths/register node_modules/.bin/typeorm migration:run",
     "schema:drop": ". ./.env.rc && typeorm schema:drop",
     "test:schema:drop": ". ./.env.test.rc && ts-node node_modules/.bin/typeorm schema:drop",
@@ -38,6 +42,7 @@
     "@nestjs/mapped-types": "^1.0.0",
     "@nestjs/passport": "^8.0.0",
     "@nestjs/platform-express": "^8.0.1",
+    "@nestjs/serve-static": "^2.2.2",
     "@nestjs/swagger": "^5.0.0",
     "@nestjs/typeorm": "^8.0.1",
     "@nestjsx/crud": "^4.6.2",

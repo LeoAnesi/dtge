@@ -45,7 +45,7 @@ async function bootstrap() {
     SwaggerModule.setup('swagger', app, document);
   }
 
-  await app.listen(process.env.SERVER_PORT ?? 8000);
+  await app.listen(process.env.PORT ?? 8000);
 }
 
 void bootstrap();
