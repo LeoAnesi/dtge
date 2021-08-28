@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import { fontFamily, fontSize, fontWeight, getSpacing, lineHeight } from 'stylesheet';
 
 export const HomeContainer = styled.div`
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;

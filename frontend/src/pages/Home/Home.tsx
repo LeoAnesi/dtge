@@ -3,9 +3,10 @@ import { HomeContainer, Logo, Title } from './Home.style';
 import logo from 'assets/logo.svg';
 import { FormattedMessage } from 'react-intl';
 import { useDTGEMembers } from './Home.hooks';
+import MembersTable from './MembersTable';
 
 const Home: React.FunctionComponent = () => {
-  const { value } = useDTGEMembers();
+  const { value: members } = useDTGEMembers();
 
   return (
     <HomeContainer>
@@ -13,7 +14,7 @@ const Home: React.FunctionComponent = () => {
       <Title>
         <FormattedMessage id="home.title" />
       </Title>
-      {value !== undefined && JSON.stringify(value)}
+      {members !== undefined && <MembersTable members={members} />}
     </HomeContainer>
   );
 };

@@ -56,8 +56,10 @@ export class HelloAssoService {
 
     const { accessToken } = await this.connectToHelloAsso();
 
-    const { data } = await lastValueFrom(
-      this.httpService.get<HelloAssoMembershipEntity[]>(
+    const {
+      data: { data },
+    } = await lastValueFrom(
+      this.httpService.get<{ data: HelloAssoMembershipEntity[] }>(
         'v5/organizations/des-territoires-aux-grandes-ecoles/items',
         {
           params: {
