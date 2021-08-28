@@ -35,6 +35,12 @@ class EnvironmentVariables {
 
   @IsString()
   ALLOWED_HOST!: string;
+
+  @IsString()
+  HELLO_ASSO_CLIENT_ID!: string;
+
+  @IsString()
+  HELLO_ASSO_CLIENT_SECRET!: string;
 }
 
 export function validate(config: Record<string, unknown>): EnvironmentVariables {

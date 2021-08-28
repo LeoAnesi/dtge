@@ -14,6 +14,7 @@ import { LoggerMiddleware } from './modules/logger/logger.middleware';
 import { QueryFailedFilter } from './exception/query-failed.filter';
 import { EntityNotFoundFilter } from './exception/entity-not-found.filter';
 import { validate } from './env.validation';
+import { MembersModule } from './modules/members/members.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { validate } from './env.validation';
       rootPath: join(__dirname, '../..', 'client'),
     }),
     LoggerModule,
+    MembersModule,
   ],
   controllers: [AppController],
   providers: [
