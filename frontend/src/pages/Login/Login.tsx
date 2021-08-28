@@ -6,7 +6,7 @@ import InputRow from 'components/InputRow';
 import { LoginButton, LoginContainer, LoginForm, Logo, Title } from './Login.style';
 import { initialValues, validateForm } from './service';
 
-import logo from 'assets/logo.png';
+import logo from 'assets/logo.svg';
 import { useLogin } from 'redux/Login/hooks';
 
 const InnerLoginForm: React.FC = () => {

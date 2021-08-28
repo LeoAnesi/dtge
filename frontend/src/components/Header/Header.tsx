@@ -1,7 +1,7 @@
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import { Link as RouterLink } from 'react-router-dom';
-import logo from 'assets/logo.png';
+import logo from 'assets/logo.svg';
 import Link from 'components/Link';
 import { PATHS } from 'routes';
 import { Logo, HeaderContainer } from './Header.style';
