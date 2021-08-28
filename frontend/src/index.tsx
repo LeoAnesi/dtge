@@ -4,7 +4,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import App from './App';
-import configureStore from './redux/store';
+import { store, persistor } from './redux/store';
 
 declare global {
   interface Window {
@@ -25,8 +25,6 @@ if (window.config?.sentry?.dsn !== undefined) {
     environment: window.config.sentry.environment,
   });
 }
-
-const { store, persistor } = configureStore();
 
 const rootEl = document.getElementById('root');
 

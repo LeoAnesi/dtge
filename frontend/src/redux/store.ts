@@ -8,7 +8,7 @@ interface StoreType {
   persistor: Persistor;
 }
 
-export default function buildStore(preloadedState = {}): StoreType {
+const buildStore = (preloadedState = {}): StoreType => {
   const persistConfig = {
     key: 'root',
     whitelist: ['login'],
@@ -38,4 +38,6 @@ export default function buildStore(preloadedState = {}): StoreType {
   }
 
   return { store, persistor };
-}
+};
+
+export const { store, persistor } = buildStore();

@@ -5,17 +5,21 @@ import { useDispatch } from 'react-redux';
 import * as Sentry from '@sentry/browser';
 import jwt_decode from 'jwt-decode';
 import { FormValues } from 'pages/Login/service';
-import { userLoggedIn } from './slice';
+import { userLoggedIn, userLoggedOut } from './slice';
 import { useTypedAsyncFn } from 'redux/useTypedAsyncFn';
-import { AsyncFnReturn } from 'react-use/lib/useAsyncFn';
+import useAsyncFn, { AsyncFnReturn } from 'react-use/lib/useAsyncFn';
 
-export const useLogout = (): AsyncFnReturn<(...args: Record<string, never>[]) => Promise<void>> => {
+export const useLogout = (): AsyncFnReturn<() => Promise<void>> => {
   const { push } = useHistory();
+  const dispatch = useDispatch();
 
-  return useTypedAsyncFn<Record<string, never>>(async () => {
-    await client.logout();
-    push(PATHS.LOGIN);
-  }, [push]);
+  return useAsyncFn(
+    async (): Promise<void> => {
+      await client.logout();
+      dispatch(userLoggedOut());
+      push(PATHS.LOGIN);
+    },
+  );
 };
 
 export const useLogin = (): AsyncFnReturn<(

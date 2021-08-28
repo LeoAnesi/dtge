@@ -1,126 +1,120 @@
-import jwt_decode from 'jwt-decode';
-import request from 'superagent';
-
-const backendBaseUrl = process.env.REACT_APP_API_BASE_URL ?? '';
-
-interface AccessToken {
-  exp: number;
-}
-
-function tokenHasExpired(token: AccessToken): boolean {
-  if (!token.exp) return true;
-
-  // Less than 10 seconds remaining => token has expired
-  const now = new Date().getTime() / 1000;
-  return token.exp - now < 10;
-}
+import axios, { AxiosRequestConfig, AxiosInstance } from 'axios';
+import { store } from 'redux/store';
+import { getUserToken } from 'redux/Login';
+import { checkToken } from 'services/token';
 
 type Method = 'get' | 'post' | 'put' | 'patch' | 'delete';
 
-class Client {
-  baseUrl: string;
-  withCredentials: boolean;
-  agent: request.SuperAgentStatic & request.Request;
-  tokenKey = 'token';
+const backendBaseUrl = process.env.REACT_APP_API_BASE_URL ?? '';
 
-  constructor(baseUrl: string, withCredentials = true) {
-    this.baseUrl = baseUrl;
-    this.withCredentials = withCredentials;
-    this.agent = request.agent();
-    this.agent.accept('application/json');
-    if (withCredentials) {
-      this.agent.withCredentials();
+class HttpClient {
+  httpClient: AxiosInstance;
+
+  constructor(baseURL: string) {
+    this.httpClient = axios.create({
+      baseURL,
+    });
+  }
+
+  async authenticatedRequest<T>(
+    method: Method,
+    endpoint: string,
+    data: Record<string, unknown> | null,
+  ) {
+    let token = null;
+    await checkToken();
+    token = getUserToken(store.getState());
+
+    const requestConfig: AxiosRequestConfig = {
+      method,
+      url: endpoint,
+      headers: { Authorization: `Bearer ${token}` },
+    };
+
+    if (['post', 'put', 'patch'].includes(method) && data) {
+      requestConfig.data = data;
+    }
+
+    try {
+      return await this.httpClient.request<T>(requestConfig);
+    } catch (error) {
+      throw error;
     }
   }
 
-  async request(
+  async unauthenticatedRequest<T>(
+    method: Method,
+    endpoint: string,
+    data: Record<string, unknown> | null,
+    withCredentials: boolean,
+  ) {
+    const requestConfig: AxiosRequestConfig = {
+      method,
+      url: endpoint,
+      withCredentials,
+    };
+
+    if (['post', 'put', 'patch'].includes(method) && data) {
+      requestConfig.data = data;
+    }
+    return await this.httpClient.request<T>(requestConfig);
+  }
+
+  async request<T>(
     method: Method,
     endpoint: string,
     data: Record<string, unknown> | null = null,
-    checkToken = true,
+    isAuthenticated = true,
   ) {
-    if (this.withCredentials) {
-      // Checking token validity, refreshing it if necessary.
-      if (checkToken) await this.checkToken();
+    if (isAuthenticated) {
+      return this.authenticatedRequest<T>(method, endpoint, data);
     }
 
-    const url = /^https?:\/\//.test(endpoint) ? endpoint : `${this.baseUrl}${endpoint}`;
-    let promise = this.agent[method](url);
-
-    const token = this.getToken();
-    if (token !== null && this.withCredentials) {
-      promise = promise.set('Authorization', `Bearer ${token}`);
-    }
-
-    if (['post', 'put', 'patch'].includes(method) && data) {
-      promise = promise.send(data);
-    }
-
-    const { body } = await promise;
-    return body;
+    return this.unauthenticatedRequest<T>(method, endpoint, data, false);
   }
 
-  getToken() {
-    return localStorage.getItem(this.tokenKey);
+  get<T>(endpoint: string, isAuthenticated = true) {
+    return this.request<T>('get', endpoint, null, isAuthenticated);
   }
 
-  updateToken(token: string) {
-    return localStorage.setItem(this.tokenKey, token);
+  post<T>(endpoint: string, data: Record<string, unknown>, isAuthenticated = true) {
+    return this.request<T>('post', endpoint, data, isAuthenticated);
   }
 
-  /**
-   * This function assess the access token is still valid, if not it refreshes it.
-   * In case of error during the refresh process it disconnects the user and redirects to the login page.
-   */
-  async checkToken() {
-    const token = this.getToken();
-
-    // There was no token to begin with, nothing to check.
-    if (token === null) return;
-
-    const parsedToken = jwt_decode<AccessToken>(token);
-    if (tokenHasExpired(parsedToken)) {
-      try {
-        await this.refreshToken();
-      } catch (e) {
-        // Token was invalid, logging out the user.
-        this.updateToken('');
-        // LOGOUT
-      }
-    }
+  put<T>(endpoint: string, data: Record<string, unknown>, isAuthenticated = true) {
+    return this.request<T>('put', endpoint, data, isAuthenticated);
   }
 
-  get(endpoint: string) {
-    return this.request('get', endpoint);
-  }
-
-  post(endpoint: string, data: Record<string, unknown>) {
-    return this.request('post', endpoint, data);
-  }
-
-  put(endpoint: string, data: Record<string, unknown>) {
-    return this.request('put', endpoint, data);
+  delete<T>(endpoint: string, isAuthenticated = true) {
+    return this.request<T>('delete', endpoint, {}, isAuthenticated);
   }
 
   async login(data: Record<string, unknown>) {
-    const result = await this.post('/auth/jwt/create', data);
-    const token: string | undefined = result.token ?? result.access;
-    if (token !== undefined) this.updateToken(token);
+    const result = await this.unauthenticatedRequest<{ access: string }>(
+      'post',
+      '/auth/jwt/create',
+      data,
+      true,
+    );
+    const token: string | undefined = result?.data.access;
     return token;
   }
 
   async logout() {
-    const result = await this.post('/auth/jwt/logout', {});
-    return result;
+    await this.post('/auth/jwt/logout', {}, false);
   }
 
   async refreshToken() {
-    const { access } = await this.request('post', '/auth/jwt/refresh', {}, false);
-    this.updateToken(access);
+    const response = await this.unauthenticatedRequest<{ access: string }>(
+      'post',
+      '/auth/jwt/refresh',
+      null,
+      true,
+    );
+    return response?.data.access;
   }
 }
 
-const client = new Client(backendBaseUrl);
-export const githubApiClient = new Client('https://api.github.com', false);
+const httpClient = new HttpClient(backendBaseUrl);
 
-export default client;
+export default httpClient;
