@@ -1,15 +1,20 @@
 import { HttpService } from '@nestjs/axios';
-import { Injectable } from '@nestjs/common';
+import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
 import { lastValueFrom } from 'rxjs';
+import { Cache } from 'cache-manager';
 import { HelloAssoMembershipEntity } from './helloAsso.membership.entity';
 
+const MEMBERS_CACHE_KEY = 'members';
 @Injectable()
 export class HelloAssoService {
   accessToken: string | null = null;
   accessTokenExpirationDate: Date | null = null;
   refreshToken: string | null = null;
 
-  constructor(private httpService: HttpService) {}
+  constructor(
+    private httpService: HttpService,
+    @Inject(CACHE_MANAGER) protected readonly cacheManager: Cache,
+  ) {}
 
   private async connectToHelloAsso(): Promise<{
     accessToken: string;
@@ -44,6 +49,11 @@ export class HelloAssoService {
   }
 
   async getMembers(): Promise<HelloAssoMembershipEntity[]> {
+    const members = await this.cacheManager.get<HelloAssoMembershipEntity[]>(MEMBERS_CACHE_KEY);
+    if (members !== undefined) {
+      return members;
+    }
+
     const { accessToken } = await this.connectToHelloAsso();
 
     const { data } = await lastValueFrom(
@@ -63,6 +73,7 @@ export class HelloAssoService {
         },
       ),
     );
+    this.cacheManager.set(MEMBERS_CACHE_KEY, data, 3600);
 
     return data;
   }

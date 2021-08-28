@@ -1,5 +1,5 @@
 import { HttpModule } from '@nestjs/axios';
-import { Module } from '@nestjs/common';
+import { CacheModule, Module } from '@nestjs/common';
 
 import { HelloAssoService } from './helloAsso.service';
 
@@ -8,6 +8,7 @@ import { HelloAssoService } from './helloAsso.service';
     HttpModule.register({
       baseURL: 'https://api.helloasso.com',
     }),
+    CacheModule.register(),
   ],
   controllers: [],
   providers: [HelloAssoService],
