@@ -6,12 +6,6 @@
   "home": {
     "title": "Liste de vos membres"
   },
-  "page": {
-    "back": "Retour",
-    "api-to-translate-example": "Ce message est traduit en utilisant directement l'API react-intl",
-    "fetch-github-avatar": "Affiche l'avatar github",
-    "add-github-username": "Entrer un username github"
-  },
   "login": {
     "title": "Accédez aux adhérents de votre association",
     "login-button": "Connexion",

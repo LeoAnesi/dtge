@@ -6,12 +6,6 @@
   "home": {
     "title": "Members list"
   },
-  "page": {
-    "back": "Back",
-    "api-to-translate-example": "This message is translated using directly react-intl API",
-    "fetch-github-avatar": "Show github avatar",
-    "add-github-username": "Enter a github username"
-  },
   "login": {
     "title": "Access you association members",
     "login-button": "Connexion",
