@@ -49,6 +49,10 @@ export class UserService extends TypeOrmCrudService<User> {
         roles: [],
       });
 
+      await this.inscriptionTokenRepository.delete({
+        token: inscriptionToken,
+      });
+
       return await this.getUser(userId);
     } catch (error) {
       if (error instanceof JsonWebTokenError) {
