@@ -11,7 +11,6 @@ interface Props {
 const Input = styled.input<Props>`
   font-family: ${fontFamily.main};
   font-size: ${fontSize.medium};
-  width: 100%;
   height: 60px;
   background-color: ${colorUsage.inputBackground};
   padding: 0 ${getSpacing(3)};

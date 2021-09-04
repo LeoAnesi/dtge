@@ -6,7 +6,6 @@ export const HomeContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: ${getSpacing(10)};
 `;
 HomeContainer.displayName = 'HomeContainer';
 
@@ -28,7 +27,7 @@ export const PageHeader = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  margin-bottom: ${getSpacing(12)};
+  margin-bottom: ${getSpacing(6)};
 
   & :not(:last-child) {
     margin-right: ${getSpacing(5)};

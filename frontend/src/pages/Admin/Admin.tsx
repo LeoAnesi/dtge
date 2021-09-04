@@ -1,14 +1,15 @@
 import React, { useEffect } from 'react';
-import { HomeContainer, Logo, Title } from './Admin.style';
+import { AdminContainer, Logo, StyledForm, Title } from './Admin.style';
 import logo from 'assets/logo.svg';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { CreateUserDto, useAssociations, useCreateUser, useGetUser } from './Admin.hooks';
 import MembersTable from './UsersTable';
-import { Field, Form, Formik } from 'formik';
+import { Field, Formik } from 'formik';
 import InputRow from 'components/InputRow';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import TextField from '@material-ui/core/TextField';
 import * as Yup from 'yup';
+import Button from 'components/Button';
 
 const CreateAccountSchema = Yup.object().shape({
   association: Yup.string().required('Required'),
@@ -27,7 +28,7 @@ const Home: React.FunctionComponent = () => {
   }, [doGetUsers]);
 
   return (
-    <HomeContainer>
+    <AdminContainer>
       <Logo alt="DTGE logo" src={logo} />
       <Title>
         <FormattedMessage id="admin.title" />
@@ -45,7 +46,7 @@ const Home: React.FunctionComponent = () => {
         {/* eslint-disable-next-line complexity */}
         {props =>
           associations !== undefined && (
-            <Form>
+            <StyledForm>
               <Autocomplete
                 id="association"
                 options={associations}
@@ -81,14 +82,14 @@ const Home: React.FunctionComponent = () => {
                 component={InputRow}
                 error={(props.touched.password ?? false) && props.errors.password}
               />
-              <button type="submit" disabled={props.isSubmitting || state.loading}>
+              <Button type="submit" disabled={props.isSubmitting || state.loading}>
                 <FormattedMessage id="admin.createUser.submit-button" />
-              </button>
-            </Form>
+              </Button>
+            </StyledForm>
           )
         }
       </Formik>
-    </HomeContainer>
+    </AdminContainer>
   );
 };
 

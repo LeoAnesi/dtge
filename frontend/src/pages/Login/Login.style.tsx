@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import { fontFamily, fontSize, fontWeight, getSpacing, lineHeight } from 'stylesheet';
 import { Form } from 'formik';
 import Button from 'components/Button';
+import InputRow from 'components/InputRow';
 
 export const Logo = styled.img`
   height: 62px;
@@ -34,4 +35,8 @@ export const LoginForm = styled(Form)`
 export const LoginButton = styled(Button)`
   align-self: center;
   margin-top: ${getSpacing(8)};
+`;
+
+export const StyledInputRow = styled(InputRow)`
+  width: 100%;
 `;

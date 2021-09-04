@@ -19,6 +19,6 @@ export const Error = styled.p`
 `;
 
 export const Row = styled.div`
-  margin-bottom: ${getSpacing(5)};
-  width: 100%;
+  display: flex;
+  flex-direction: column;
 `;

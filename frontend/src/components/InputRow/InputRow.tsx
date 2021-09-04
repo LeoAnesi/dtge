@@ -16,17 +16,18 @@ interface Props {
     ) => void;
     value?: string;
   };
+  className?: string;
 }
 
 const InputRow: React.FunctionComponent<Props> = props => {
-  const { error, field, label, disabled, type, placeholder } = props;
+  const { error, field, label, disabled, type, placeholder, className } = props;
   const hasError = error !== null && error !== undefined;
 
   const NULLISH_LABEL_VALUES = [null, undefined, ''];
   const hasLabel = !NULLISH_LABEL_VALUES.includes(label);
 
   return (
-    <Row>
+    <Row className={className}>
       {hasLabel && <Label>{label}</Label>}
       <Input
         disabled={disabled}

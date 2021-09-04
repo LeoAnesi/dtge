@@ -23,6 +23,7 @@ export const StyledCSVLink = styled(CSVLink)`
 export const CSVLogo = styled(CSV)`
   height: 30px;
 
+  /* stylelint-disable-next-line selector-max-type */
   path {
     fill: ${colorUsage.primaryButtonColor};
   }
