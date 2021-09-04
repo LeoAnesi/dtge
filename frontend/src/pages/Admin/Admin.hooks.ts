@@ -1,3 +1,4 @@
+import { GridRowId } from '@mui/x-data-grid';
 import { useAsync } from 'react-use';
 import useAsyncFn, { AsyncFnReturn, AsyncState } from 'react-use/lib/useAsyncFn';
 import httpClient from 'services/networking/client';
@@ -29,6 +30,12 @@ export const useGenerateInscriptionLink = (): AsyncFnReturn<(
     );
 
     return data;
+  });
+};
+
+export const useDeleteManyUsers = (): AsyncFnReturn<(userIds: GridRowId[]) => Promise<void>> => {
+  return useAsyncFn(async userIds => {
+    await httpClient.post<string>('users/delete-many', { userIds }, true);
   });
 };
 

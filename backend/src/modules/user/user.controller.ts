@@ -1,5 +1,5 @@
-import { Body, Controller, Get, Param, Post, Req, UseGuards } from '@nestjs/common';
-import { Request } from 'express';
+import { Body, Controller, Get, Param, Post, Req, Res, UseGuards } from '@nestjs/common';
+import { Request, Response } from 'express';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 import { Crud, CrudController, Override } from '@nestjsx/crud';
@@ -14,6 +14,7 @@ import { UpdateUserDto } from './interfaces/updateUser.dto';
 import { User } from './entities/user.entity';
 import { UserService } from './user.service';
 import { GenerateInscriptionLinkDto } from './interfaces/generateInscriptionToken.dto';
+import { DeleteManyUsersDto } from './interfaces/deleteManyUsers.dto';
 
 @ApiTags('User')
 @Crud({
@@ -70,6 +71,15 @@ export class UserController implements CrudController<User> {
     const host = (await req.get('host')) as string;
 
     return this.service.generateInscriptionLink(association, host);
+  }
+
+  @UseGuards(RolesGuard)
+  @Roles('admin')
+  @Post('delete-many')
+  async deleteMany(@Body() body: DeleteManyUsersDto, @Res() res: Response): Promise<void> {
+    await this.service.deleteMany(body.userIds);
+
+    res.sendStatus(204);
   }
 
   @Get('me')

@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { EntityNotFoundError, Repository } from 'typeorm';
+import { EntityNotFoundError, In, Repository } from 'typeorm';
 import { hash } from 'bcrypt';
 import * as querystring from 'querystring';
 import { JsonWebTokenError } from 'jsonwebtoken';
@@ -85,5 +85,9 @@ export class UserService extends TypeOrmCrudService<User> {
     const params = querystring.stringify({ inscriptionToken, association });
 
     return `https://${host}/register?${params}`;
+  }
+
+  deleteMany(userIds: string[]) {
+    this.userRepository.delete({ id: In(userIds) });
   }
 }

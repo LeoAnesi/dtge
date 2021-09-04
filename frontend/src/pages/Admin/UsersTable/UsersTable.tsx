@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import { DataGrid, GridColDef, GridRowId, GridRowParams } from '@mui/x-data-grid';
 import { UserDto } from '../Admin.hooks';
 import { MembersTableContainer } from './UsersTable.style';
 
@@ -27,12 +27,21 @@ const columns: GridColDef[] = [
 
 interface Props {
   users: UserDto[];
+  setSelectedRows: (userIds: GridRowId[]) => void;
 }
 
-const MembersTable = ({ users }: Props): JSX.Element => {
+const MembersTable = ({ users, setSelectedRows }: Props): JSX.Element => {
   return (
     <MembersTableContainer>
-      <DataGrid rows={users} columns={columns} pageSize={20} disableSelectionOnClick />
+      <DataGrid
+        onSelectionModelChange={newSelection => setSelectedRows(newSelection)}
+        checkboxSelection={true}
+        isRowSelectable={(params: GridRowParams) => !params.row.roles.includes('admin')}
+        rows={users}
+        columns={columns}
+        pageSize={20}
+        disableSelectionOnClick
+      />
     </MembersTableContainer>
   );
 };

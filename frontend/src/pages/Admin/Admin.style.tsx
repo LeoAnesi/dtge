@@ -1,4 +1,3 @@
-import CopyToClipboard from 'react-copy-to-clipboard';
 import styled from 'styled-components';
 import { fontFamily, fontSize, fontWeight, getSpacing, lineHeight } from 'stylesheet';
 

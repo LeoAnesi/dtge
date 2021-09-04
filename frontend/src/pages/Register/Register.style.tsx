@@ -1,8 +1,6 @@
 import styled from 'styled-components';
 import { fontFamily, fontSize, fontWeight, getSpacing, lineHeight } from 'stylesheet';
 import { Form } from 'formik';
-import Button from 'components/Button';
-import InputRow from 'components/InputRow';
 
 export const Logo = styled.img`
   height: 62px;
