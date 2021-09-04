@@ -31,6 +31,7 @@ export class MembersService {
       id: helloAssoMember.id.toString(),
       membershipDate: new Date(helloAssoMember.order.date).toISOString().slice(0, 10),
       ...helloAssoMember.user,
+      amount: (helloAssoMember.amount / 100).toFixed(2),
       phoneNumber: this.getCustomFieldValue(helloAssoMember.customFields, HelloAssoQuestions.PHONE),
       email: this.getCustomFieldValue(helloAssoMember.customFields, HelloAssoQuestions.EMAIL),
       association: this.getCustomFieldValue(

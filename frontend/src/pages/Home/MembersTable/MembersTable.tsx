@@ -44,6 +44,13 @@ const columns: GridColDef[] = [
     editable: false,
   },
   {
+    field: 'amount',
+    headerName: 'Participation',
+    type: 'string',
+    width: 200,
+    editable: false,
+  },
+  {
     field: 'lycee',
     headerName: 'Lycee',
     type: 'string',

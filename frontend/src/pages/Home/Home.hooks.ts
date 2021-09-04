@@ -22,4 +22,5 @@ export interface MemberDto {
   classePrepa: string;
   activityField: string;
   cursus: string;
+  amount: string;
 }
