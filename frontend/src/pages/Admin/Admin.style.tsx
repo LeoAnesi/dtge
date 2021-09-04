@@ -1,4 +1,4 @@
-import { Form } from 'formik';
+import CopyToClipboard from 'react-copy-to-clipboard';
 import styled from 'styled-components';
 import { fontFamily, fontSize, fontWeight, getSpacing, lineHeight } from 'stylesheet';
 
@@ -27,7 +27,7 @@ export const Title = styled.h1`
 `;
 Title.displayName = 'Title';
 
-export const StyledForm = styled(Form)`
+export const GenerateUserContainer = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -35,4 +35,17 @@ export const StyledForm = styled(Form)`
   & > :not(:last-child) {
     margin-right: ${getSpacing(5)};
   }
+`;
+
+export const LinkToCopy = styled.span`
+  overflow: hidden;
+  white-space: nowrap;
+  max-width: 500px;
+  text-overflow: ellipsis;
+`;
+
+export const StyledCopyToClipboard = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 `;

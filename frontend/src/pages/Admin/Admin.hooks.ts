@@ -18,9 +18,15 @@ export const useAssociations = (): AsyncState<string[]> => {
   });
 };
 
-export const useCreateUser = (): AsyncFnReturn<(user: CreateUserDto) => Promise<UserDto>> => {
-  return useAsyncFn(async user => {
-    const { data } = await httpClient.post<UserDto>('users', { ...user, roles: [] }, true);
+export const useGenerateInscriptionLink = (): AsyncFnReturn<(
+  association: string,
+) => Promise<string>> => {
+  return useAsyncFn(async association => {
+    const { data } = await httpClient.post<string>(
+      'users/generate-inscription-link',
+      { association },
+      true,
+    );
 
     return data;
   });
@@ -33,11 +39,5 @@ export interface UserDto {
   roles: string[];
   createdAt: string;
   updatedAt: string;
-  association: string;
-}
-
-export interface CreateUserDto {
-  email: string;
-  password: string;
   association: string;
 }

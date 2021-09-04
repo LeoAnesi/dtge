@@ -1,4 +1,5 @@
-import { BadRequestException, Body, Controller, Get, Param, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Req, UseGuards } from '@nestjs/common';
+import { Request } from 'express';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 import { Crud, CrudController, Override } from '@nestjsx/crud';
@@ -6,11 +7,13 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Roles } from 'auth/role.decorator';
 import { RolesGuard } from 'auth/role.guard';
+import { Public } from 'auth/public.decorator';
 import { GetUserDto } from './interfaces/getUser.dto';
 import { CreateUserDto } from './interfaces/createUser.dto';
 import { UpdateUserDto } from './interfaces/updateUser.dto';
-import { User } from './user.entity';
+import { User } from './entities/user.entity';
 import { UserService } from './user.service';
+import { GenerateInscriptionLinkDto } from './interfaces/generateInscriptionToken.dto';
 
 @ApiTags('User')
 @Crud({
@@ -44,14 +47,8 @@ export class UserController implements CrudController<User> {
   ) {}
 
   @Override()
-  @ApiBearerAuth('access-token')
-  @UseGuards(RolesGuard)
-  @Roles('admin')
+  @Public()
   createOne(@Body() userDto: CreateUserDto): Promise<GetUserDto> {
-    if (userDto.association === '' || userDto.email === '' || userDto.password === '') {
-      throw new BadRequestException();
-    }
-
     return this.service.createUser(userDto);
   }
 
@@ -61,6 +58,18 @@ export class UserController implements CrudController<User> {
   @Roles('admin')
   updateOne(@Param('id') userId: string, @Body() userDto: UpdateUserDto): Promise<GetUserDto> {
     return this.service.updateUser(userId, userDto);
+  }
+
+  @UseGuards(RolesGuard)
+  @Roles('admin')
+  @Post('generate-inscription-link')
+  async generateInscriptionLink(
+    @Body() { association }: GenerateInscriptionLinkDto,
+    @Req() req: Request,
+  ): Promise<string> {
+    const host = (await req.get('host')) as string;
+
+    return this.service.generateInscriptionLink(association, host);
   }
 
   @Get('me')

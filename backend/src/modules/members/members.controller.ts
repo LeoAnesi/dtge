@@ -1,6 +1,6 @@
 import { Controller, Get, Req } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { User } from '../user/user.entity';
+import { User } from '../user/entities/user.entity';
 import { MemberDto } from './member.dto';
 import { MembersService } from './members.service';
 

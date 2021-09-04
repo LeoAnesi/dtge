@@ -1,27 +1,26 @@
-import React, { useEffect } from 'react';
-import { AdminContainer, Logo, StyledForm, Title } from './Admin.style';
+import React, { useEffect, useState } from 'react';
+import {
+  AdminContainer,
+  GenerateUserContainer,
+  LinkToCopy,
+  Logo,
+  Title,
+  StyledCopyToClipboard,
+} from './Admin.style';
 import logo from 'assets/logo.svg';
-import { FormattedMessage, useIntl } from 'react-intl';
-import { CreateUserDto, useAssociations, useCreateUser, useGetUser } from './Admin.hooks';
+import { FormattedMessage } from 'react-intl';
+import { useAssociations, useGenerateInscriptionLink, useGetUser } from './Admin.hooks';
 import MembersTable from './UsersTable';
-import { Field, Formik } from 'formik';
-import InputRow from 'components/InputRow';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import TextField from '@material-ui/core/TextField';
-import * as Yup from 'yup';
 import Button from 'components/Button';
-
-const CreateAccountSchema = Yup.object().shape({
-  association: Yup.string().required('Required'),
-  email: Yup.string().required('Required'),
-  password: Yup.string().required('Required'),
-});
+import CopyToClipboard from 'react-copy-to-clipboard';
 
 const Home: React.FunctionComponent = () => {
-  const intl = useIntl();
   const [{ value: users }, doGetUsers] = useGetUser();
   const { value: associations } = useAssociations();
-  const [state, doCreateUser] = useCreateUser();
+  const [selectedAssociation, setSelectedAssociation] = useState<string | null>(null);
+  const [state, doGenerateInscriptionLink] = useGenerateInscriptionLink();
 
   useEffect(() => {
     doGetUsers();
@@ -34,61 +33,41 @@ const Home: React.FunctionComponent = () => {
         <FormattedMessage id="admin.title" />
       </Title>
       {users !== undefined && <MembersTable users={users} />}
-      <Formik<CreateUserDto>
-        initialValues={{ email: '', password: '', association: '' }}
-        validationSchema={CreateAccountSchema}
-        onSubmit={async (values, { setSubmitting }) => {
-          await doCreateUser(values);
-          await doGetUsers();
-          setSubmitting(false);
-        }}
-      >
-        {/* eslint-disable-next-line complexity */}
-        {props =>
-          associations !== undefined && (
-            <StyledForm>
-              <Autocomplete
-                id="association"
-                options={associations}
-                getOptionLabel={option => option}
-                style={{ width: 300 }}
-                onChange={(event, value) =>
-                  props.handleChange('association')({
-                    ...event,
-                    target: { ...event.target, value },
-                  })
-                }
-                renderInput={params => (
-                  <TextField
-                    {...params}
-                    label={<FormattedMessage id="admin.createUser.association" />}
-                    variant="outlined"
-                  />
-                )}
+      {associations !== undefined && (
+        <GenerateUserContainer>
+          <Autocomplete
+            id="association"
+            options={associations}
+            getOptionLabel={option => option}
+            style={{ width: 300 }}
+            onChange={(event, value) => setSelectedAssociation(value)}
+            renderInput={params => (
+              <TextField
+                {...params}
+                label={<FormattedMessage id="admin.generateInscriptionLink.association" />}
+                variant="outlined"
               />
-              <Field
-                type="text"
-                name="email"
-                label={<FormattedMessage id="admin.createUser.email" />}
-                placeholder={intl.formatMessage({ id: 'admin.createUser.email-placeholder' })}
-                component={InputRow}
-                error={(props.touched.email ?? false) && props.errors.email}
-              />
-              <Field
-                type="password"
-                name="password"
-                label={<FormattedMessage id="admin.createUser.password" />}
-                placeholder={intl.formatMessage({ id: 'admin.createUser.password-placeholder' })}
-                component={InputRow}
-                error={(props.touched.password ?? false) && props.errors.password}
-              />
-              <Button type="submit" disabled={props.isSubmitting || state.loading}>
-                <FormattedMessage id="admin.createUser.submit-button" />
-              </Button>
-            </StyledForm>
-          )
-        }
-      </Formik>
+            )}
+          />
+          <Button
+            type="submit"
+            disabled={selectedAssociation === null || state.loading}
+            onClick={() => doGenerateInscriptionLink(selectedAssociation as string)}
+          >
+            <FormattedMessage id="admin.generateInscriptionLink.submit-button" />
+          </Button>
+        </GenerateUserContainer>
+      )}
+      {state.value !== undefined && (
+        <CopyToClipboard text={state.value}>
+          <StyledCopyToClipboard>
+            <LinkToCopy>{state.value}</LinkToCopy>
+            <Button>
+              <FormattedMessage id="admin.generateInscriptionLink.copy" />
+            </Button>
+          </StyledCopyToClipboard>
+        </CopyToClipboard>
+      )}
     </AdminContainer>
   );
 };

@@ -1,14 +1,11 @@
 {
   "admin": {
     "title": "Admin",
-    "createUser": {
+    "generateInscriptionLink": {
       "association": "Association",
       "association-placeholder": "",
-      "email": "Email",
-      "email-placeholder": "ex: comes@theodo.fr",
-      "password": "Password",
-      "password-placeholder": "xxxxxxxxxxx",
-      "submit-button": "Créer"
+      "submit-button": "Créer un lien d'inscription",
+      "copy": "Copier"
     }
   },
   "header": {
@@ -28,5 +25,16 @@
     "email-placeholder": "ex: comes@theodo.fr",
     "password": "Mot de passe",
     "password-placeholder": "xxxxxxxxxxx"
+  },
+  "register": {
+    "title": "Création d'un compte pour {association}",
+    "email": "Email",
+    "email-placeholder": "ex: comes@theodo.fr",
+    "password": "Mot de passe",
+    "password-placeholder": "xxxxxxxxxxx",
+    "passwordConfirmation": "Confirmation du mot de passe",
+    "passwordConfirmation-placeholder": "xxxxxxxxxxx",
+    "submit-button": "Créer",
+    "incorrect-url": "L'url d'inscription est incorrecte"
   }
 }

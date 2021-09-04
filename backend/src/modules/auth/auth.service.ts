@@ -7,7 +7,7 @@ import { EntityNotFoundError } from 'typeorm/error/EntityNotFoundError';
 import { compare } from 'bcrypt';
 import { Credentials } from './interfaces/credentials.dto';
 import { JwtPayload } from './interfaces/jwt-payload.interface';
-import { User } from '../user/user.entity';
+import { User } from '../user/entities/user.entity';
 import { JwtToken } from './interfaces/jwt-token.interface';
 
 const ACCESS_TOKEN_MINUTES_TO_LIVE = 10;

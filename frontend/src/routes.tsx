@@ -7,11 +7,13 @@ import Loader from './components/Loader/Loader';
 const Home = lazy(() => import('./pages/Home'));
 const Login = lazy(() => import('./pages/Login'));
 const Admin = lazy(() => import('./pages/Admin'));
+const Register = lazy(() => import('./pages/Register'));
 
 export const PATHS = {
   HOME: '/',
   LOGIN: '/login',
   ADMIN: '/admin',
+  REGISTER: '/register',
 };
 
 interface ProtectedRouteProps extends RouteProps {
@@ -41,6 +43,7 @@ const routes = (): JSX.Element => (
       <ProtectedRoute exact path={PATHS.HOME} component={Home} />
       <ProtectedRoute exact path={PATHS.ADMIN} component={Admin} role="admin" />
       <Route path={PATHS.LOGIN} component={Login} />
+      <Route path={PATHS.REGISTER} component={Register} />
     </Switch>
   </Suspense>
 );
