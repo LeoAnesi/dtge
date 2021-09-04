@@ -3,7 +3,7 @@ import httpClient from 'services/networking/client';
 
 export const useCreateUser = (): AsyncFnReturn<(user: CreateUserDto) => Promise<UserDto>> => {
   return useAsyncFn(async user => {
-    const { data } = await httpClient.post<UserDto>('users', { ...user }, true);
+    const { data } = await httpClient.post<UserDto>('users', { ...user }, false);
 
     return data;
   });
