@@ -1,5 +1,6 @@
 export interface MemberDto {
   id: string;
+  membershipDate: string;
   firstName: string;
   lastName: string;
   phoneNumber: string;

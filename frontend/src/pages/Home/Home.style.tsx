@@ -21,6 +21,17 @@ export const Title = styled.h1`
   font-family: ${fontFamily.main};
   font-size: ${fontSize.large};
   line-height: ${lineHeight.medium};
-  margin-bottom: ${getSpacing(12)};
 `;
 Title.displayName = 'Title';
+
+export const PageHeader = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: ${getSpacing(12)};
+
+  & :not(:last-child) {
+    margin-right: ${getSpacing(5)};
+  }
+`;
+PageHeader.displayName = 'PageHeader';
