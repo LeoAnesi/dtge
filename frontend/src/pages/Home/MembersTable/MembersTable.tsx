@@ -1,7 +1,13 @@
 import * as React from 'react';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { MemberDto } from '../Home.hooks';
-import { MembersTableContainer } from './MembersTable.style';
+import {
+  CSVLogo,
+  DownloadButton,
+  MembersTableContainer,
+  StyledCSVLink,
+} from './MembersTable.style';
+import { FormattedMessage } from 'react-intl';
 
 const columns: GridColDef[] = [
   {
@@ -92,8 +98,21 @@ interface Props {
 }
 
 const MembersTable = ({ members }: Props): JSX.Element => {
+  const csvHeaders = columns.map(column => ({
+    label: column.headerName as string,
+    key: column.field as string,
+  }));
+
   return (
     <MembersTableContainer>
+      <StyledCSVLink data={members} headers={csvHeaders}>
+        <DownloadButton>
+          <CSVLogo />
+          <span>
+            <FormattedMessage id="home.members.download" />
+          </span>
+        </DownloadButton>
+      </StyledCSVLink>
       <DataGrid rows={members} columns={columns} pageSize={100} disableSelectionOnClick />
     </MembersTableContainer>
   );

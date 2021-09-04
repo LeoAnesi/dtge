@@ -16,7 +16,10 @@
     "logout": "Log Out"
   },
   "home": {
-    "title": "Members list for the year"
+    "title": "Members list for the year",
+    "members": {
+      "download": "Download members list"
+    }
   },
   "login": {
     "title": "Access you association members",
