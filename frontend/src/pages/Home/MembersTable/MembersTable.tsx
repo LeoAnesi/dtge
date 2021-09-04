@@ -5,6 +5,12 @@ import { MembersTableContainer } from './MembersTable.style';
 
 const columns: GridColDef[] = [
   {
+    field: 'membershipDate',
+    headerName: 'Membership Date',
+    width: 200,
+    editable: false,
+  },
+  {
     field: 'firstName',
     headerName: 'First name',
     width: 150,
@@ -38,7 +44,7 @@ const columns: GridColDef[] = [
     editable: false,
   },
   {
-    field: 'lycee:',
+    field: 'lycee',
     headerName: 'Lycee',
     type: 'string',
     width: 200,

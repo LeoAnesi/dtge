@@ -1,4 +1,16 @@
 {
+  "admin": {
+    "title": "Admin",
+    "createUser": {
+      "association": "Association",
+      "association-placeholder": "",
+      "email": "Email",
+      "email-placeholder": "ex: comes@theodo.fr",
+      "password": "Password",
+      "password-placeholder": "xxxxxxxxxxx",
+      "submit-button": "Créer"
+    }
+  },
   "header": {
     "login": "Connexion",
     "logout": "Déconnexion"

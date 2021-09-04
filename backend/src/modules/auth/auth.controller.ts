@@ -17,7 +17,7 @@ export class AuthController {
 
     res.cookie(REFRESH_TOKEN, refresh, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: process.env.NODE_ENV !== 'development',
     });
 
     return res.send({ access });

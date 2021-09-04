@@ -1,6 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { trim } from 'lodash';
-import { HelloAssoCustomField, HelloAssoQuestions } from '../helloAsso/helloAsso.membership.entity';
+import {
+  HelloAssoCustomField,
+  HelloAssoMembershipEntity,
+  HelloAssoQuestions,
+} from '../helloAsso/helloAsso.membership.entity';
 import { HelloAssoService } from '../helloAsso/helloAsso.service';
 import { MemberDto } from './member.dto';
 
@@ -8,18 +12,33 @@ import { MemberDto } from './member.dto';
 export class MembersService {
   constructor(private readonly helloAssoService: HelloAssoService) {}
 
-  async getAll(): Promise<MemberDto[]> {
+  async getAll(association?: string): Promise<MemberDto[]> {
     const helloAssoMembers = await this.helloAssoService.getMembers();
 
+    const members = this.convertMemberToFrontendFormat(helloAssoMembers);
+
+    if (association !== undefined) {
+      return members.filter((member) => member.association === association);
+    }
+
+    return members;
+  }
+
+  private convertMemberToFrontendFormat(
+    helloAssoMembers: HelloAssoMembershipEntity[],
+  ): MemberDto[] {
     return helloAssoMembers.map((helloAssoMember) => ({
       id: helloAssoMember.id.toString(),
+      membershipDate: new Date(helloAssoMember.order.date).toISOString().slice(0, 10),
       ...helloAssoMember.user,
       phoneNumber: this.getCustomFieldValue(helloAssoMember.customFields, HelloAssoQuestions.PHONE),
       email: this.getCustomFieldValue(helloAssoMember.customFields, HelloAssoQuestions.EMAIL),
       association: this.getCustomFieldValue(
         helloAssoMember.customFields,
         HelloAssoQuestions.ASSOCIATION,
-      ),
+      )
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, ''),
       lycee: this.getCustomFieldValue(helloAssoMember.customFields, HelloAssoQuestions.LYCEE),
       universityName: this.getCustomFieldValue(
         helloAssoMember.customFields,
@@ -39,8 +58,11 @@ export class MembersService {
 
   private getCustomFieldValue(
     customFields: HelloAssoCustomField[],
-    field: HelloAssoQuestions,
+    fieldQuestions: string[],
   ): string {
-    return trim(customFields.find((customField) => customField.name === field)?.answer as string);
+    return trim(
+      customFields.find((customField) => fieldQuestions.includes(customField.name))
+        ?.answer as string,
+    );
   }
 }

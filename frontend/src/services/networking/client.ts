@@ -2,6 +2,7 @@ import axios, { AxiosRequestConfig, AxiosInstance } from 'axios';
 import { store } from 'redux/store';
 import { getUserToken } from 'redux/Login';
 import { checkToken } from 'services/token';
+import { User } from 'redux/Login/types';
 
 type Method = 'get' | 'post' | 'put' | 'patch' | 'delete';
 
@@ -96,8 +97,12 @@ class HttpClient {
       data,
       true,
     );
-    const token: string | undefined = result?.data.access;
-    return token;
+    const token = result?.data.access;
+    const { data: user } = await this.httpClient.get<User>('users/me', {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    return { token, user };
   }
 
   async logout() {

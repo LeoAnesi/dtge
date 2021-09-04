@@ -5,7 +5,7 @@ import { FormattedMessage } from 'react-intl';
 import { useDTGEMembers } from './Home.hooks';
 import MembersTable from './MembersTable';
 
-const Home: React.FunctionComponent = () => {
+const Home = (): JSX.Element => {
   const { value: members } = useDTGEMembers();
 
   return (

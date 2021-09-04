@@ -2,9 +2,11 @@ import { HttpService } from '@nestjs/axios';
 import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
 import { lastValueFrom } from 'rxjs';
 import { Cache } from 'cache-manager';
-import { HelloAssoMembershipEntity } from './helloAsso.membership.entity';
+import { trim } from 'lodash';
+import { HelloAssoMembershipEntity, HelloAssoQuestions } from './helloAsso.membership.entity';
 
 const MEMBERS_CACHE_KEY = 'members';
+const ASSOCIATIONS_CACHE_KEY = 'associations';
 @Injectable()
 export class HelloAssoService {
   accessToken: string | null = null;
@@ -78,5 +80,35 @@ export class HelloAssoService {
     this.cacheManager.set(MEMBERS_CACHE_KEY, data, 3600);
 
     return data;
+  }
+
+  async getAssociations(): Promise<string[]> {
+    const cachedAssociations = await this.cacheManager.get<string[]>(ASSOCIATIONS_CACHE_KEY);
+    if (cachedAssociations !== undefined) {
+      return cachedAssociations;
+    }
+
+    const members = await this.getMembers();
+
+    const associationsSet = new Set<string>();
+
+    members.forEach((member) => {
+      const memberAssociation = trim(
+        member.customFields.find((customField) =>
+          HelloAssoQuestions.ASSOCIATION.includes(customField.name),
+        )?.answer,
+      )
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '');
+
+      if (memberAssociation !== '') {
+        associationsSet.add(memberAssociation);
+      }
+    });
+
+    const associations = Array.from(associationsSet);
+    this.cacheManager.set(ASSOCIATIONS_CACHE_KEY, associations, 86400);
+
+    return associations;
   }
 }

@@ -20,7 +20,7 @@ export class AuthService {
     @InjectRepository(User) private readonly userRepository: Repository<User>,
   ) {}
 
-  async checkCredentials(credentials: Credentials): Promise<JwtToken> {
+  async retrieveUser(credentials: Credentials): Promise<User> {
     // We need to use a query builder to bypass hidden password
     const user = await this.userRepository
       .createQueryBuilder('user')
@@ -36,6 +36,12 @@ export class AuthService {
     if (!areCredentialsValid) {
       throw new UnauthorizedException();
     }
+
+    return user;
+  }
+
+  async checkCredentials(credentials: Credentials): Promise<JwtToken> {
+    const user = await this.retrieveUser(credentials);
 
     return {
       access: this.createJwt(user, ACCESS_TOKEN_MINUTES_TO_LIVE),

@@ -15,6 +15,7 @@ import { QueryFailedFilter } from './exception/query-failed.filter';
 import { EntityNotFoundFilter } from './exception/entity-not-found.filter';
 import { validate } from './env.validation';
 import { MembersModule } from './modules/members/members.module';
+import { AssociationsModule } from './modules/associations/associations.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { MembersModule } from './modules/members/members.module';
     }),
     LoggerModule,
     MembersModule,
+    AssociationsModule,
   ],
   controllers: [AppController],
   providers: [

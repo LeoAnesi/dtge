@@ -34,7 +34,7 @@ export const checkToken = async (): Promise<void> => {
     try {
       const access = await httpClient.refreshToken();
 
-      store.dispatch(userLoggedIn(access));
+      store.dispatch(userLoggedIn({ token: access }));
     } catch (e) {
       await httpClient.logout();
       history.push(PATHS.LOGIN);

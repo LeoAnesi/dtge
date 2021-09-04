@@ -1,19 +1,18 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Controller, Get, Req } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { Roles } from 'auth/role.decorator';
-import { RolesGuard } from 'auth/role.guard';
+import { User } from '../user/user.entity';
 import { MemberDto } from './member.dto';
 import { MembersService } from './members.service';
 
 @Controller('members')
 @ApiTags('Members')
-@UseGuards(RolesGuard)
-@Roles('admin')
 export class MembersController {
   constructor(private readonly membersService: MembersService) {}
 
   @Get()
-  getAll(): Promise<MemberDto[]> {
-    return this.membersService.getAll();
+  getAll(@Req() req: Request & { user: User }): Promise<MemberDto[]> {
+    return this.membersService.getAll(
+      !req.user.roles.includes('admin') ? req.user.association : undefined,
+    );
   }
 }

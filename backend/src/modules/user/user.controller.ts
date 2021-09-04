@@ -1,4 +1,4 @@
-import { Body, Controller, Param, UseGuards } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, Param, Req, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 import { Crud, CrudController, Override } from '@nestjsx/crud';
@@ -21,21 +21,22 @@ import { UserService } from './user.service';
     exclude: ['password'],
   },
   routes: {
-    only: ['getOneBase', 'createOneBase', 'updateOneBase', 'deleteOneBase'],
+    only: ['getOneBase', 'createOneBase', 'updateOneBase', 'deleteOneBase', 'getManyBase'],
     getOneBase: {
-      decorators: [ApiBearerAuth('access-token')],
+      decorators: [UseGuards(RolesGuard), Roles('admin'), ApiBearerAuth('access-token')],
     },
     deleteOneBase: {
-      decorators: [ApiBearerAuth('access-token')],
+      decorators: [UseGuards(RolesGuard), Roles('admin'), ApiBearerAuth('access-token')],
     },
     updateOneBase: {
-      decorators: [ApiBearerAuth('access-token')],
+      decorators: [UseGuards(RolesGuard), Roles('admin'), ApiBearerAuth('access-token')],
+    },
+    getManyBase: {
+      decorators: [UseGuards(RolesGuard), Roles('admin'), ApiBearerAuth('access-token')],
     },
   },
 })
 @Controller('users')
-@UseGuards(RolesGuard)
-@Roles('admin')
 export class UserController implements CrudController<User> {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
@@ -44,13 +45,26 @@ export class UserController implements CrudController<User> {
 
   @Override()
   @ApiBearerAuth('access-token')
+  @UseGuards(RolesGuard)
+  @Roles('admin')
   createOne(@Body() userDto: CreateUserDto): Promise<GetUserDto> {
+    if (userDto.association === '' || userDto.email === '' || userDto.password === '') {
+      throw new BadRequestException();
+    }
+
     return this.service.createUser(userDto);
   }
 
   @Override()
   @ApiBearerAuth('access-token')
+  @UseGuards(RolesGuard)
+  @Roles('admin')
   updateOne(@Param('id') userId: string, @Body() userDto: UpdateUserDto): Promise<GetUserDto> {
     return this.service.updateUser(userId, userDto);
+  }
+
+  @Get('me')
+  me(@Req() req: Request & { user: User }): User {
+    return req.user;
   }
 }

@@ -32,9 +32,9 @@ export const useLogin = (): AsyncFnReturn<(
 
   return useTypedAsyncFn<{ values: FormValues }>(
     async ({ values }) => {
-      const token: string | undefined = await client.login(values);
+      const { token, user } = await client.login(values);
       if (token !== undefined) {
-        dispatch(userLoggedIn(token));
+        dispatch(userLoggedIn({ token, user }));
         Sentry.configureScope(scope => {
           scope.setUser({
             email: values.email,
