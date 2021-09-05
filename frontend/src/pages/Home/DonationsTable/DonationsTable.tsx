@@ -70,7 +70,7 @@ const MembersTable = ({ donations }: Props): JSX.Element => {
 
   return (
     <MembersTableContainer>
-      <StyledCSVLink data={donations} headers={csvHeaders}>
+      <StyledCSVLink data={donations} headers={csvHeaders} separator=";">
         <DownloadButton>
           <CSVLogo />
           <span>
