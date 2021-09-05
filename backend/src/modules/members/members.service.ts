@@ -1,16 +1,84 @@
 import { Injectable } from '@nestjs/common';
-import { trim } from 'lodash';
+import { groupBy, trim } from 'lodash';
 import {
   HelloAssoCustomField,
   HelloAssoMembershipEntity,
   HelloAssoQuestions,
 } from '../helloAsso/helloAsso.membership.entity';
 import { HelloAssoService } from '../helloAsso/helloAsso.service';
-import { MemberDto, MembershipType } from './member.dto';
+import { MemberDto, MembershipType } from './dtos/member.dto';
+import { StatsDto } from './dtos/stats';
 
 @Injectable()
 export class MembersService {
   constructor(private readonly helloAssoService: HelloAssoService) {}
+
+  async getStats(): Promise<StatsDto> {
+    const helloAssoMembers = await this.helloAssoService.getMembers();
+    const associations = await this.helloAssoService.getAssociations();
+
+    const { [MembershipType.MEMBERSHIP]: members, [MembershipType.DONATION]: donations } = groupBy(
+      helloAssoMembers,
+      (helloAssoMember) =>
+        helloAssoMember.name.includes('Dons') ? MembershipType.DONATION : MembershipType.MEMBERSHIP,
+    );
+
+    const membersByYearAndMonth = groupBy(members, (member) => {
+      const membershipYearAndMonth = new Date(member.order.date).toISOString().slice(0, 7);
+
+      return membershipYearAndMonth;
+    });
+    const donationsByYearAndMonth = groupBy(donations, (donation) => {
+      const membershipYearAndMonth = new Date(donation.order.date).toISOString().slice(0, 7);
+
+      return membershipYearAndMonth;
+    });
+
+    return Object.entries(membersByYearAndMonth).reduce(
+      (stats, [yearAndMonth, membersForAMonth]) => {
+        const donationsForAMonth: HelloAssoMembershipEntity[] | undefined =
+          donationsByYearAndMonth[yearAndMonth] ?? [];
+
+        return {
+          ...stats,
+          [yearAndMonth]: associations.map((association) => {
+            const donationsForAMonthForAnAssociation = donationsForAMonth.filter(
+              (donation) =>
+                this.getCustomFieldValue(donation.customFields, HelloAssoQuestions.ASSOCIATION)
+                  .normalize('NFD')
+                  .replace(/[\u0300-\u036f]/g, '') === association,
+            );
+
+            const membersForAMonthForAnAssociation = membersForAMonth.filter(
+              (member) =>
+                this.getCustomFieldValue(member.customFields, HelloAssoQuestions.ASSOCIATION)
+                  .normalize('NFD')
+                  .replace(/[\u0300-\u036f]/g, '') === association,
+            );
+
+            const donationsAmount = donationsForAMonthForAnAssociation.reduce(
+              (amount, donation) => amount + parseFloat((donation.amount / 100).toFixed(2)),
+              0,
+            );
+            const membershipsAmount = membersForAMonthForAnAssociation.reduce(
+              (amount, membership) => amount + parseFloat((membership.amount / 100).toFixed(2)),
+              0,
+            );
+
+            return {
+              association,
+              membershipsNumber: membersForAMonthForAnAssociation.length,
+              membershipsAmount,
+              donationsNumber: donationsForAMonthForAnAssociation.length,
+              donationsAmount,
+              total: membershipsAmount + donationsAmount,
+            };
+          }),
+        };
+      },
+      {},
+    );
+  }
 
   async getAll(association?: string): Promise<MemberDto[]> {
     const helloAssoMembers = await this.helloAssoService.getMembers();
