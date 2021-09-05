@@ -16,6 +16,7 @@
     "title": {
       "memberships": "Members list for the year",
       "donations": "Donations list for the year",
+      "stats": "Statictics"
     },
     "all-years": "All years",
     "members": {
@@ -24,9 +25,13 @@
     "donations": {
       "download": "Download donations list"
     },
+    "statistics": {
+      "download": "Download statistics"
+    },
     "tabs": {
       "memberships": "Memberships",
       "donations": "Donations",
+      "stats": "Statictics"
     }
   },
   "login": {

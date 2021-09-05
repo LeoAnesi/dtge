@@ -9,6 +9,7 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import DonationsTable from './DonationsTable';
 import TabPannel from 'components/TabPannel';
+import StatisticsTable from './StatisticsTable';
 
 const generateScolarYear = (year: number) => `${year}/${year + 1}`;
 const generateFirstOfJuneForYear = (year: number | string) => `${year}-06-01`;
@@ -28,6 +29,7 @@ const groupByScholarYear = (memberships: MemberDto[]) =>
 enum TABS {
   MEMBERSHIP = 'memberships',
   DONATIONS = 'donations',
+  STATS = 'stats',
 }
 
 const Home = (): JSX.Element => {
@@ -54,6 +56,14 @@ const Home = (): JSX.Element => {
       yearRange: Object.keys(membersBySchoolYear),
     };
   }, [members, donations]);
+  const selectedMembers = useMemo(
+    () => (selectedScolarYear !== '' ? membersBySchoolYear[selectedScolarYear] : members) ?? [],
+    [selectedScolarYear, membersBySchoolYear, members],
+  );
+  const selectedDonations = useMemo(
+    () => (selectedScolarYear !== '' ? donationsBySchoolYear[selectedScolarYear] : donations) ?? [],
+    [selectedScolarYear, donationsBySchoolYear, donations],
+  );
 
   return (
     <HomeContainer>
@@ -70,7 +80,7 @@ const Home = (): JSX.Element => {
         <Title>
           <FormattedMessage id={`home.title.${selectedTab}`} />
         </Title>
-        {!loading && (
+        {!loading && selectedTab !== TABS.STATS && (
           <Select
             value={selectedScolarYear}
             onChange={event => setSelectedScolarYear(event.target.value as string)}
@@ -87,19 +97,13 @@ const Home = (): JSX.Element => {
         )}
       </PageHeader>
       <TabPannel value={TABS.MEMBERSHIP} selectedValue={selectedTab}>
-        <MembersTable
-          members={
-            (selectedScolarYear !== '' ? membersBySchoolYear[selectedScolarYear] : members) ?? []
-          }
-        />
+        <MembersTable members={selectedMembers} />
       </TabPannel>
       <TabPannel value={TABS.DONATIONS} selectedValue={selectedTab}>
-        <DonationsTable
-          donations={
-            (selectedScolarYear !== '' ? donationsBySchoolYear[selectedScolarYear] : donations) ??
-            []
-          }
-        />
+        <DonationsTable donations={selectedDonations} />
+      </TabPannel>
+      <TabPannel value={TABS.STATS} selectedValue={selectedTab}>
+        <StatisticsTable />
       </TabPannel>
     </HomeContainer>
   );
