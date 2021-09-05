@@ -15,7 +15,7 @@ export class HelloAssoService {
 
   constructor(
     private httpService: HttpService,
-    @Inject(CACHE_MANAGER) protected readonly cacheManager: Cache,
+    @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
   ) {}
 
   private async connectToHelloAsso(): Promise<{
@@ -51,9 +51,9 @@ export class HelloAssoService {
   }
 
   async getMembers(): Promise<HelloAssoMembershipEntity[]> {
-    const members = await this.cacheManager.get<HelloAssoMembershipEntity[]>(MEMBERS_CACHE_KEY);
+    const members = await this.cacheManager.get<string>(MEMBERS_CACHE_KEY);
     if (members !== undefined) {
-      return members;
+      return JSON.parse(members);
     }
 
     const { accessToken } = await this.connectToHelloAsso();
@@ -77,15 +77,15 @@ export class HelloAssoService {
         },
       ),
     );
-    this.cacheManager.set(MEMBERS_CACHE_KEY, data, 3600);
+    await this.cacheManager.set(MEMBERS_CACHE_KEY, JSON.stringify(data), { ttl: 3600 });
 
     return data;
   }
 
   async getAssociations(): Promise<string[]> {
-    const cachedAssociations = await this.cacheManager.get<string[]>(ASSOCIATIONS_CACHE_KEY);
+    const cachedAssociations = await this.cacheManager.get<string>(ASSOCIATIONS_CACHE_KEY);
     if (cachedAssociations !== undefined) {
-      return cachedAssociations;
+      return JSON.parse(cachedAssociations);
     }
 
     const members = await this.getMembers();
@@ -107,7 +107,9 @@ export class HelloAssoService {
     });
 
     const associations = Array.from(associationsSet);
-    this.cacheManager.set(ASSOCIATIONS_CACHE_KEY, associations, 86400);
+    await this.cacheManager.set(ASSOCIATIONS_CACHE_KEY, JSON.stringify(associations), {
+      ttl: 86400,
+    });
 
     return associations;
   }
