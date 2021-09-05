@@ -38,7 +38,7 @@ const Home = (): JSX.Element => {
   const today = new Date();
   const todaysYear = today.getFullYear();
   const hasPassedFirstOfJune =
-    today.toISOString().slice(0, 9) > generateFirstOfJuneForYear(todaysYear);
+    today.toISOString().slice(0, 10) >= generateFirstOfJuneForYear(todaysYear);
   const [selectedScolarYear, setSelectedScolarYear] = useState<string>(
     hasPassedFirstOfJune ? generateScolarYear(todaysYear) : generateScolarYear(todaysYear - 1),
   );
