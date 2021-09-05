@@ -8,6 +8,7 @@ import groupBy from 'lodash/groupBy';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import DonationsTable from './DonationsTable';
+import TabPannel from 'components/TabPannel';
 
 const generateScolarYear = (year: number) => `${year}/${year + 1}`;
 const generateFirstOfJuneForYear = (year: number | string) => `${year}-06-01`;
@@ -29,7 +30,6 @@ enum TABS {
   DONATIONS = 'donations',
 }
 
-// eslint-disable-next-line complexity
 const Home = (): JSX.Element => {
   const { value: memberships, loading } = useDTGEMembers();
   const [selectedTab, setSelectedTab] = useState(TABS.MEMBERSHIP);
@@ -86,21 +86,21 @@ const Home = (): JSX.Element => {
           </Select>
         )}
       </PageHeader>
-      {selectedTab === TABS.MEMBERSHIP && (
+      <TabPannel value={TABS.MEMBERSHIP} selectedValue={selectedTab}>
         <MembersTable
           members={
             (selectedScolarYear !== '' ? membersBySchoolYear[selectedScolarYear] : members) ?? []
           }
         />
-      )}
-      {selectedTab === TABS.DONATIONS && (
+      </TabPannel>
+      <TabPannel value={TABS.DONATIONS} selectedValue={selectedTab}>
         <DonationsTable
           donations={
             (selectedScolarYear !== '' ? donationsBySchoolYear[selectedScolarYear] : donations) ??
             []
           }
         />
-      )}
+      </TabPannel>
     </HomeContainer>
   );
 };
