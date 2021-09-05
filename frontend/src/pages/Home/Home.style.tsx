@@ -6,14 +6,12 @@ export const HomeContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+
+  & > :not(:last-child) {
+    margin-bottom: ${getSpacing(4)};
+  }
 `;
 HomeContainer.displayName = 'HomeContainer';
-
-export const Logo = styled.img`
-  width: ${getSpacing(32)};
-  margin-bottom: ${getSpacing(4)};
-`;
-Logo.displayName = 'Logo';
 
 export const Title = styled.h1`
   font-weight: ${fontWeight.bold};
@@ -27,9 +25,8 @@ export const PageHeader = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  margin-bottom: ${getSpacing(6)};
 
-  & :not(:last-child) {
+  & > :not(:last-child) {
     margin-right: ${getSpacing(5)};
   }
 `;

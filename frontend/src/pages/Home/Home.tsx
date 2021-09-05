@@ -1,17 +1,38 @@
 import React, { useMemo, useState } from 'react';
-import { HomeContainer, Logo, PageHeader, Title } from './Home.style';
-import logo from 'assets/logo.svg';
+import { HomeContainer, PageHeader, Title } from './Home.style';
 import { FormattedMessage } from 'react-intl';
-import { useDTGEMembers } from './Home.hooks';
+import { MemberDto, MembershipType, useDTGEMembers } from './Home.hooks';
 import MembersTable from './MembersTable';
 import { MenuItem, Select } from '@material-ui/core';
 import groupBy from 'lodash/groupBy';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+import DonationsTable from './DonationsTable';
 
 const generateScolarYear = (year: number) => `${year}/${year + 1}`;
 const generateFirstOfJuneForYear = (year: number | string) => `${year}-06-01`;
+const groupByScholarYear = (memberships: MemberDto[]) =>
+  groupBy(memberships, ({ membershipDate }) => {
+    const membershipYear = parseInt(membershipDate.slice(0, 4));
 
+    if (
+      generateFirstOfJuneForYear(membershipYear - 1) < membershipDate &&
+      membershipDate < generateFirstOfJuneForYear(membershipYear)
+    ) {
+      return generateScolarYear(membershipYear - 1);
+    }
+
+    return generateScolarYear(membershipYear);
+  });
+enum TABS {
+  MEMBERSHIP = 'memberships',
+  DONATIONS = 'donations',
+}
+
+// eslint-disable-next-line complexity
 const Home = (): JSX.Element => {
-  const { value: members, loading } = useDTGEMembers();
+  const { value: memberships, loading } = useDTGEMembers();
+  const [selectedTab, setSelectedTab] = useState(TABS.MEMBERSHIP);
   const today = new Date();
   const todaysYear = today.getFullYear();
   const hasPassedFirstOfJune =
@@ -19,32 +40,35 @@ const Home = (): JSX.Element => {
   const [selectedScolarYear, setSelectedScolarYear] = useState<string>(
     hasPassedFirstOfJune ? generateScolarYear(todaysYear) : generateScolarYear(todaysYear - 1),
   );
-  const { yearRange, membersBySchoolYear } = useMemo(() => {
-    const membersBySchoolYear = groupBy(members, ({ membershipDate }) => {
-      const membershipYear = parseInt(membershipDate.slice(0, 4));
-
-      if (
-        generateFirstOfJuneForYear(membershipYear - 1) < membershipDate &&
-        membershipDate < generateFirstOfJuneForYear(membershipYear)
-      ) {
-        return generateScolarYear(membershipYear - 1);
-      }
-
-      return generateScolarYear(membershipYear);
-    });
+  const {
+    [MembershipType.MEMBERSHIP]: members,
+    [MembershipType.DONATION]: donations,
+  } = useMemo(() => groupBy(memberships, 'type'), [memberships]);
+  const { yearRange, membersBySchoolYear, donationsBySchoolYear } = useMemo(() => {
+    const membersBySchoolYear = groupByScholarYear(members);
+    const donationsBySchoolYear = groupByScholarYear(donations);
 
     return {
       membersBySchoolYear,
+      donationsBySchoolYear,
       yearRange: Object.keys(membersBySchoolYear),
     };
-  }, [members]);
+  }, [members, donations]);
 
   return (
     <HomeContainer>
-      <Logo alt="DTGE logo" src={logo} />
+      <Tabs value={selectedTab} onChange={(event, value) => setSelectedTab(value)}>
+        {Object.values(TABS).map(tabTranslationKey => (
+          <Tab
+            key={tabTranslationKey}
+            label={<FormattedMessage id={`home.tabs.${tabTranslationKey}`} />}
+            value={tabTranslationKey}
+          />
+        ))}
+      </Tabs>
       <PageHeader>
         <Title>
-          <FormattedMessage id="home.title" />
+          <FormattedMessage id={`home.title.${selectedTab}`} />
         </Title>
         {!loading && (
           <Select
@@ -62,11 +86,21 @@ const Home = (): JSX.Element => {
           </Select>
         )}
       </PageHeader>
-      <MembersTable
-        members={
-          (selectedScolarYear !== '' ? membersBySchoolYear[selectedScolarYear] : members) ?? []
-        }
-      />
+      {selectedTab === TABS.MEMBERSHIP && (
+        <MembersTable
+          members={
+            (selectedScolarYear !== '' ? membersBySchoolYear[selectedScolarYear] : members) ?? []
+          }
+        />
+      )}
+      {selectedTab === TABS.DONATIONS && (
+        <DonationsTable
+          donations={
+            (selectedScolarYear !== '' ? donationsBySchoolYear[selectedScolarYear] : donations) ??
+            []
+          }
+        />
+      )}
     </HomeContainer>
   );
 };

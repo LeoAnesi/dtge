@@ -13,10 +13,20 @@
     "logout": "Log Out"
   },
   "home": {
-    "title": "Members list for the year",
+    "title": {
+      "memberships": "Members list for the year",
+      "donations": "Donations list for the year",
+    },
     "all-years": "All years",
     "members": {
       "download": "Download members list"
+    },
+    "donations": {
+      "download": "Download donations list"
+    },
+    "tabs": {
+      "memberships": "Memberships",
+      "donations": "Donations",
     }
   },
   "login": {

@@ -10,6 +10,11 @@ export const useDTGEMembers = (): AsyncState<MemberDto[]> => {
   });
 };
 
+export enum MembershipType {
+  DONATION = 'Dons',
+  MEMBERSHIP = 'Adhésion',
+}
+
 export interface MemberDto {
   id: string;
   membershipDate: string;
@@ -24,4 +29,5 @@ export interface MemberDto {
   activityField: string;
   cursus: string;
   amount: string;
+  type: MembershipType;
 }

@@ -6,7 +6,7 @@ import {
   HelloAssoQuestions,
 } from '../helloAsso/helloAsso.membership.entity';
 import { HelloAssoService } from '../helloAsso/helloAsso.service';
-import { MemberDto } from './member.dto';
+import { MemberDto, MembershipType } from './member.dto';
 
 @Injectable()
 export class MembersService {
@@ -32,6 +32,9 @@ export class MembersService {
       membershipDate: new Date(helloAssoMember.order.date).toISOString().slice(0, 10),
       ...helloAssoMember.user,
       amount: (helloAssoMember.amount / 100).toFixed(2),
+      type: helloAssoMember.name.includes('Dons')
+        ? MembershipType.DONATION
+        : MembershipType.MEMBERSHIP,
       phoneNumber: this.getCustomFieldValue(helloAssoMember.customFields, HelloAssoQuestions.PHONE),
       email: this.getCustomFieldValue(helloAssoMember.customFields, HelloAssoQuestions.EMAIL),
       association: this.getCustomFieldValue(
