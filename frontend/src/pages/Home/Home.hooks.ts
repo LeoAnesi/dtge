@@ -39,6 +39,7 @@ export interface MemberDto {
   schoolAndTeachingSubject: string;
   cursus: string;
   foreignInternship: string;
+  career: string;
   associationEncounter: string;
   engagement: string;
 }

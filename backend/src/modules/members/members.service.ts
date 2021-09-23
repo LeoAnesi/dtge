@@ -128,6 +128,7 @@ export class MembersService {
         ),
         cursus: getCustomFieldValue(HelloAssoQuestions.CURSUS),
         foreignInternship: getCustomFieldValue(HelloAssoQuestions.FOREIGN_INTERNSHIP),
+        career: getCustomFieldValue(HelloAssoQuestions.CAREER),
         associationEncounter: getCustomFieldValue(HelloAssoQuestions.ASSOCIATION_ENCOUNTER),
         engagement: getCustomFieldValue(HelloAssoQuestions.ENGAGEMENT),
       };

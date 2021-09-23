@@ -133,6 +133,12 @@ const columns: GridColDef[] = [
     width: 200,
   },
   {
+    field: 'career',
+    headerName: 'Parcours / fonction',
+    type: 'string',
+    width: 400,
+  },
+  {
     field: 'associationEncounter',
     headerName: 'Comment as-tu connu DTGE ?',
     type: 'string',
