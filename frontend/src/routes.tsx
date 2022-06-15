@@ -8,12 +8,14 @@ const Home = lazy(() => import('./pages/Home'));
 const Login = lazy(() => import('./pages/Login'));
 const Admin = lazy(() => import('./pages/Admin'));
 const Register = lazy(() => import('./pages/Register'));
+const ResetPassword = lazy(() => import('./pages/ResetPassword'));
 
 export const PATHS = {
   HOME: '/',
   LOGIN: '/login',
   ADMIN: '/admin',
   REGISTER: '/register',
+  RESET_PASSWORD: '/reset-password',
 };
 
 interface ProtectedRouteProps extends RouteProps {
@@ -44,6 +46,7 @@ const routes = (): JSX.Element => (
       <ProtectedRoute exact path={PATHS.ADMIN} component={Admin} role="admin" />
       <Route path={PATHS.LOGIN} component={Login} />
       <Route path={PATHS.REGISTER} component={Register} />
+      <Route path={PATHS.RESET_PASSWORD} component={ResetPassword} />
     </Switch>
   </Suspense>
 );

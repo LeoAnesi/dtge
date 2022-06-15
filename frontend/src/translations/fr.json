@@ -6,7 +6,8 @@
       "association-placeholder": "",
       "submit-button": "Créer un lien d'inscription",
       "copy": "Copier"
-    }
+    },
+    "generateResetPasswordLink": "Générer un lien"
   },
   "header": {
     "login": "Connexion",
@@ -52,6 +53,17 @@
     "passwordConfirmation": "Confirmation du mot de passe",
     "passwordConfirmation-placeholder": "xxxxxxxxxxx",
     "submit-button": "Créer",
-    "incorrect-url": "L'url d'inscription est incorrecte"
+    "incorrect-url": "L'url d'inscription est incorrecte",
+    "success": "Compte créé, vous allez être redirigés vers la page de login"
+  },
+  "reset-password": {
+    "title": "Réinitialisation du mot de passe pour le compte {email}",
+    "password": "Mot de passe",
+    "password-placeholder": "xxxxxxxxxxx",
+    "passwordConfirmation": "Confirmation du mot de passe",
+    "passwordConfirmation-placeholder": "xxxxxxxxxxx",
+    "submit-button": "Réinitialiser le mot passe",
+    "incorrect-url": "L'url de reinitialisation de mot de passe est incorrecte",
+    "success": "Votre mot de passe a été réinitialisé, vous allez être redirigés vers la page de login"
   }
 }

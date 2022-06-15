@@ -12,6 +12,8 @@ import { CreateUserDto } from './interfaces/createUser.dto';
 import { UpdateUserDto } from './interfaces/updateUser.dto';
 import { GetUserDto } from './interfaces/getUser.dto';
 import { InscriptionToken } from './entities/inscriptionToken.entity';
+import { ResetPasswordToken } from './entities/resetPasswordToken.entity';
+import { ResetPasswordDto } from './interfaces/resetPassword.dto';
 
 const SALT_ROUNDS = 10;
 
@@ -21,6 +23,8 @@ export class UserService extends TypeOrmCrudService<User> {
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     @InjectRepository(InscriptionToken)
     private readonly inscriptionTokenRepository: Repository<InscriptionToken>,
+    @InjectRepository(ResetPasswordToken)
+    private readonly resetPasswordTokenRepository: Repository<ResetPasswordToken>,
     private readonly jwtService: JwtService,
   ) {
     super(userRepository);
@@ -90,6 +94,55 @@ export class UserService extends TypeOrmCrudService<User> {
 
     return `https://${host}/register?${params}`;
   }
+
+  async generateResetPasswordLink(userId: string, host: string): Promise<string> {
+    const user = await this.userRepository.findOneOrFail({ id: userId });
+
+    const resetPasswordToken = this.jwtService.sign(
+      { date: new Date() },
+      { expiresIn: 60 * 60 * 24 * 7 },
+    );
+    await this.resetPasswordTokenRepository.save({ userId, token: resetPasswordToken });
+    const params = querystring.stringify({
+      resetPasswordToken,
+      email: user.email,
+    });
+
+    return `https://${host}/reset-password?${params}`;
+  }
+
+  resetPassword = async ({
+    resetPasswordToken,
+    password,
+  }: ResetPasswordDto): Promise<GetUserDto> => {
+    try {
+      this.jwtService.verify(resetPasswordToken);
+      const { userId } = await this.resetPasswordTokenRepository.findOneOrFail({
+        token: resetPasswordToken,
+      });
+
+      const hashedPassword = await this.hashPassword(password);
+      await this.userRepository.save({
+        id: userId,
+        password: hashedPassword,
+      });
+
+      await this.inscriptionTokenRepository.delete({
+        token: resetPasswordToken,
+      });
+
+      return await this.getUser(userId);
+    } catch (error) {
+      if (error instanceof JsonWebTokenError) {
+        throw new BadRequestException('Invalid reset password Token');
+      }
+      if (error instanceof EntityNotFoundError) {
+        throw new BadRequestException('Reset password token not found');
+      }
+
+      throw error;
+    }
+  };
 
   deleteMany(userIds: string[]) {
     this.userRepository.delete({ id: In(userIds) });

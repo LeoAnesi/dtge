@@ -15,6 +15,8 @@ import { User } from './entities/user.entity';
 import { UserService } from './user.service';
 import { GenerateInscriptionLinkDto } from './interfaces/generateInscriptionToken.dto';
 import { DeleteManyUsersDto } from './interfaces/deleteManyUsers.dto';
+import { GenerateResetPasswordLinkDto } from './interfaces/generateResetPasswordLink.dto';
+import { ResetPasswordDto } from './interfaces/resetPassword.dto';
 
 @ApiTags('User')
 @Crud({
@@ -85,5 +87,23 @@ export class UserController implements CrudController<User> {
   @Get('me')
   me(@Req() req: Request & { user: User }): User {
     return req.user;
+  }
+
+  @UseGuards(RolesGuard)
+  @Roles('admin')
+  @Post('generate-reset-password-link')
+  async generateResetPasswordLink(
+    @Body() { userId }: GenerateResetPasswordLinkDto,
+    @Req() req: Request,
+  ): Promise<string> {
+    const host = (await req.get('host')) as string;
+
+    return this.service.generateResetPasswordLink(userId, host);
+  }
+
+  @Public()
+  @Post('reset-password')
+  async resetPassword(@Body() body: ResetPasswordDto): Promise<GetUserDto> {
+    return this.service.resetPassword(body);
   }
 }

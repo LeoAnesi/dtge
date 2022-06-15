@@ -3,18 +3,17 @@ import React from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import * as Yup from 'yup';
 
-import { RegisterContainer, Logo, RegisterForm, Title } from './Register.style';
+import { RegisterContainer, Logo, RegisterForm, Title } from './ResetPassword.style';
 
 import logo from 'assets/logo.svg';
 import { useHistory, useLocation } from 'react-router';
-import { CreateUserDto, useCreateUser } from './Register.hooks';
+import { ResetPasswordDto, useResetPassword } from './ResetPassword.hooks';
 import InputRow from 'components/InputRow';
 import Button from 'components/Button';
 import { PATHS } from 'routes';
 import { toast } from 'react-toastify';
 
-const CreateAccountSchema = Yup.object().shape({
-  email: Yup.string().required('Required'),
+const ResetPasswordSchema = Yup.object().shape({
   password: Yup.string().required('Required'),
   passwordConfirmation: Yup.string().oneOf([Yup.ref('password'), null], 'Passwords must match'),
 });
@@ -23,66 +22,57 @@ const Register: React.FC = () => {
   const history = useHistory();
   const query = new URLSearchParams(useLocation().search);
   const intl = useIntl();
-  const [state, doCreateUser] = useCreateUser();
-  const association = query.get('association');
-  const inscriptionToken = query.get('inscriptionToken');
+  const [state, doResetPassword] = useResetPassword();
+  const email = query.get('email');
+  const resetPasswordToken = query.get('resetPasswordToken');
 
-  if (association === null || inscriptionToken == null) {
+  if (email === null || resetPasswordToken == null) {
     return (
       <div>
-        <FormattedMessage id="register.incorrect-url" />
+        <FormattedMessage id="reset-password.incorrect-url" />
       </div>
     );
   }
 
   return (
     <RegisterContainer>
-      <Logo alt="Forge logo" src={logo} />
+      <Logo alt="Dtge logo" src={logo} />
       <Title>
-        <FormattedMessage id="register.title" values={{ association }} />
+        <FormattedMessage id="reset-password.title" values={{ email }} />
       </Title>
-      <Formik<Pick<CreateUserDto, 'email' | 'password'> & { passwordConfirmation: string }>
+      <Formik<Pick<ResetPasswordDto, 'password'> & { passwordConfirmation: string }>
         initialValues={{
-          email: '',
           password: '',
           passwordConfirmation: '',
         }}
-        validationSchema={CreateAccountSchema}
+        validationSchema={ResetPasswordSchema}
         onSubmit={async ({ passwordConfirmation, ...values }, { setSubmitting }) => {
-          await doCreateUser({ ...values, inscriptionToken });
+          await doResetPassword({ ...values, resetPasswordToken });
           setSubmitting(false);
-          toast.success(intl.formatMessage({ id: 'register.success' }));
+          toast.success(intl.formatMessage({ id: 'reset-password.success' }));
           setTimeout(() => history.push(PATHS.LOGIN), 3000);
         }}
       >
         {props => (
           <RegisterForm>
             <Field
-              type="text"
-              name="email"
-              label={<FormattedMessage id="register.email" />}
-              placeholder={intl.formatMessage({ id: 'register.email-placeholder' })}
-              component={InputRow}
-              error={(props.touched.email ?? false) && props.errors.email}
-            />
-            <Field
               type="password"
               name="password"
-              label={<FormattedMessage id="register.password" />}
-              placeholder={intl.formatMessage({ id: 'register.password-placeholder' })}
+              label={<FormattedMessage id="reset-password.password" />}
+              placeholder={intl.formatMessage({ id: 'reset-password.password-placeholder' })}
               component={InputRow}
               error={(props.touched.password ?? false) && props.errors.password}
             />
             <Field
               type="password"
               name="passwordConfirmation"
-              label={<FormattedMessage id="register.passwordConfirmation" />}
-              placeholder={intl.formatMessage({ id: 'register.password-placeholder' })}
+              label={<FormattedMessage id="reset-password.passwordConfirmation" />}
+              placeholder={intl.formatMessage({ id: 'reset-password.password-placeholder' })}
               component={InputRow}
               error={(props.touched.password ?? false) && props.errors.password}
             />
             <Button type="submit" disabled={props.isSubmitting || state.loading}>
-              <FormattedMessage id="register.submit-button" />
+              <FormattedMessage id="reset-password.submit-button" />
             </Button>
           </RegisterForm>
         )}

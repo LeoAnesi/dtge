@@ -1,5 +1,3 @@
-import Button from 'components/Button';
-import Link from 'components/Link';
 import styled from 'styled-components';
 import { fontSize, getSpacing } from 'stylesheet';
 

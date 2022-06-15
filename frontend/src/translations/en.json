@@ -6,7 +6,8 @@
       "association-placeholder": "",
       "submit-button": "Create inscription link",
       "copy": "Copy"
-    }
+    },
+    "generateResetPasswordLink": "Generate Link"
   },
   "header": {
     "login": "Login",
@@ -52,6 +53,17 @@
     "passwordConfirmation": "Password Confirmation",
     "passwordConfirmation-placeholder": "xxxxxxxxxxx",
     "submit-button": "Create",
-    "incorrect-url": "Inscription url is incorrect"
+    "incorrect-url": "Inscription url is incorrect",
+    "success": "Account created, you are about to be redirected to the login page"
+  },
+  "reset-password": {
+    "title": "Reset password for {email}",
+    "password": "Password",
+    "password-placeholder": "xxxxxxxxxxx",
+    "passwordConfirmation": "Password Confirmation",
+    "passwordConfirmation-placeholder": "xxxxxxxxxxx",
+    "submit-button": "Reset Password",
+    "incorrect-url": "Reset password url is incorrect",
+    "success": "Password has been reset, you are about to be redirected to the login page"
   }
 }

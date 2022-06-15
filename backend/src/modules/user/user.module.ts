@@ -6,10 +6,11 @@ import { UserController } from './user.controller';
 import { User } from './entities/user.entity';
 import { UserService } from './user.service';
 import { InscriptionToken } from './entities/inscriptionToken.entity';
+import { ResetPasswordToken } from './entities/resetPasswordToken.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, InscriptionToken]),
+    TypeOrmModule.forFeature([User, InscriptionToken, ResetPasswordToken]),
     JwtModule.register({
       secretOrKeyProvider: () => {
         const secretKey = process.env.SECRET_KEY;
