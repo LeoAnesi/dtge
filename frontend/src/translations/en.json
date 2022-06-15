@@ -10,7 +10,8 @@
   },
   "header": {
     "login": "Login",
-    "logout": "Log Out"
+    "logout": "Log Out",
+    "admin": "Admin"
   },
   "home": {
     "title": {

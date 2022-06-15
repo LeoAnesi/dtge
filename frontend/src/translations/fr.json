@@ -10,7 +10,8 @@
   },
   "header": {
     "login": "Connexion",
-    "logout": "Déconnexion"
+    "logout": "Déconnexion",
+    "admin": "Admin"
   },
   "home": {
     "title": {

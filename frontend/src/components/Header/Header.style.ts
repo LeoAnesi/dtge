@@ -1,3 +1,5 @@
+import Button from 'components/Button';
+import Link from 'components/Link';
 import styled from 'styled-components';
 import { fontSize, getSpacing } from 'stylesheet';
 
@@ -18,3 +20,11 @@ export const Logo = styled.img`
 `;
 
 Logo.displayName = 'Logo';
+
+export const HeaderLinks = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: ${getSpacing(2)};
+`;
+
+HeaderLinks.displayName = 'HeaderLinks';
