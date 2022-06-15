@@ -3,6 +3,7 @@ import { store } from 'redux/store';
 import { getUserToken } from 'redux/Login';
 import { checkToken } from 'services/token';
 import { User } from 'redux/Login/types';
+import { toast } from 'react-toastify';
 
 type Method = 'get' | 'post' | 'put' | 'patch' | 'delete';
 
@@ -15,6 +16,20 @@ class HttpClient {
     this.httpClient = axios.create({
       baseURL,
     });
+    this.httpClient.interceptors.response.use(
+      response => {
+        // Any status code that lie within the range of 2xx cause this function to trigger
+        // Do something with response data
+        return response;
+      },
+      error => {
+        // Any status codes that falls outside the range of 2xx cause this function to trigger
+        // Do something with response error
+        toast.error(error.response.data.message);
+
+        return Promise.reject(error);
+      },
+    );
   }
 
   async authenticatedRequest<T>(

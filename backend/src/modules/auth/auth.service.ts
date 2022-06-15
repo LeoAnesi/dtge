@@ -28,13 +28,19 @@ export class AuthService {
       .where('user.email = :email', { email: credentials.email })
       .getOne();
 
+    const userNotFoundException = new NotFoundException(
+      'User not found, wrong username or password',
+    );
+
     if (!user) {
-      throw new NotFoundException();
+      // Keep this line it's there to avoid timing difference between existing and non existing users
+      await compare(credentials.password, 'Jean-Claude Van Damme');
+      throw userNotFoundException;
     }
 
     const areCredentialsValid = await compare(credentials.password, user.password);
     if (!areCredentialsValid) {
-      throw new UnauthorizedException();
+      throw userNotFoundException;
     }
 
     return user;

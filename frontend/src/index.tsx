@@ -1,4 +1,3 @@
-import * as Sentry from '@sentry/browser';
 import 'babel-polyfill';
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -16,14 +15,6 @@ declare global {
       };
     };
   }
-}
-
-if (window.config?.sentry?.dsn !== undefined) {
-  Sentry.init({
-    dsn: window.config.sentry.dsn,
-    release: window.config.sentry.release,
-    environment: window.config.sentry.environment,
-  });
 }
 
 const rootEl = document.getElementById('root');

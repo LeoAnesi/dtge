@@ -1,5 +1,6 @@
 import React, { ReactNode } from 'react';
 import { IntlProvider } from 'react-intl';
+import { Slide, ToastContainer } from 'react-toastify';
 
 import Header from 'components/Header';
 import { flattenMessages } from 'services/i18n/intl';
@@ -17,6 +18,7 @@ import '@formatjs/intl-relativetimeformat/polyfill';
 import '@formatjs/intl-relativetimeformat/dist/locale-data/en';
 import '@formatjs/intl-relativetimeformat/dist/locale-data/fr';
 /* End of language polyfills */
+import 'react-toastify/dist/ReactToastify.css';
 
 import { PageContent, RootContainer } from './Root.style';
 
@@ -34,6 +36,19 @@ const Root: React.FunctionComponent<Props> = ({ children }) => (
     <RootContainer>
       <Header />
       <PageContent>{children}</PageContent>
+      <ToastContainer
+        position="bottom-right"
+        autoClose={3000}
+        hideProgressBar
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable={false}
+        pauseOnHover
+        theme="colored"
+        transition={Slide}
+      />
     </RootContainer>
   </IntlProvider>
 );
