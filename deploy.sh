@@ -8,6 +8,6 @@ cd ..
 
 heroku container:login
 
-heroku container:push web
+heroku container:push --app dtge web
 
-heroku container:release web
+heroku container:release --app dtge web
