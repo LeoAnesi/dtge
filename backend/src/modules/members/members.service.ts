@@ -14,7 +14,9 @@ export class MembersService {
   constructor(private readonly helloAssoService: HelloAssoService) {}
 
   async getStats(): Promise<StatsDto> {
-    const helloAssoMembers = await this.helloAssoService.getMembers();
+    const helloAssoMembers = (await this.helloAssoService.getMembers()).filter(
+      (helloAssoMember) => helloAssoMember.customFields !== undefined,
+    );
     const associations = await this.helloAssoService.getAssociations();
 
     const { [MembershipType.MEMBERSHIP]: members, [MembershipType.DONATION]: donations } = groupBy(
