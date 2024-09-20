@@ -95,44 +95,46 @@ export class MembersService {
   private convertMemberToFrontendFormat(
     helloAssoMembers: HelloAssoMembershipEntity[],
   ): MemberDto[] {
-    return helloAssoMembers.map((helloAssoMember) => {
-      const getCustomFieldValue = (fieldQuestions: string[]): string =>
-        this.getCustomFieldValue(helloAssoMember.customFields, fieldQuestions);
+    return helloAssoMembers
+      .filter((helloAssoMember) => helloAssoMember.customFields !== undefined)
+      .map((helloAssoMember) => {
+        const getCustomFieldValue = (fieldQuestions: string[]): string =>
+          this.getCustomFieldValue(helloAssoMember.customFields, fieldQuestions);
 
-      return {
-        id: helloAssoMember.id.toString(),
-        membershipDate: new Date(helloAssoMember.order.date).toISOString().slice(0, 10),
-        ...helloAssoMember.user,
-        sex: getCustomFieldValue(HelloAssoQuestions.SEX),
-        amount: (helloAssoMember.amount / 100).toFixed(2),
-        name: helloAssoMember.name,
-        type: helloAssoMember.name.includes('Dons')
-          ? MembershipType.DONATION
-          : MembershipType.MEMBERSHIP,
-        phoneNumber: getCustomFieldValue(HelloAssoQuestions.PHONE),
-        email: getCustomFieldValue(HelloAssoQuestions.EMAIL),
-        association: getCustomFieldValue(HelloAssoQuestions.ASSOCIATION)
-          .normalize('NFD')
-          .replace(/[\u0300-\u036f]/g, ''),
-        firstMembership: getCustomFieldValue(HelloAssoQuestions.FIRST_MEMBERSHIP),
-        address: getCustomFieldValue(HelloAssoQuestions.ADDRESS),
-        zipCode: getCustomFieldValue(HelloAssoQuestions.ZIP_CODE),
-        birthDate: getCustomFieldValue(HelloAssoQuestions.BIRTH_DATE),
-        originCity: getCustomFieldValue(HelloAssoQuestions.ORIGIN_CITY),
-        lycee: getCustomFieldValue(HelloAssoQuestions.LYCEE),
-        universityName: getCustomFieldValue(HelloAssoQuestions.UNIVERSITY_NAME),
-        classePrepa: getCustomFieldValue(HelloAssoQuestions.CLASSE_PREPA),
-        activityField: getCustomFieldValue(HelloAssoQuestions.ACTIVITY_FIELD),
-        schoolAndTeachingSubject: getCustomFieldValue(
-          HelloAssoQuestions.SCHOOL_AND_TEACHING_SUBJECT,
-        ),
-        cursus: getCustomFieldValue(HelloAssoQuestions.CURSUS),
-        foreignInternship: getCustomFieldValue(HelloAssoQuestions.FOREIGN_INTERNSHIP),
-        career: getCustomFieldValue(HelloAssoQuestions.CAREER),
-        associationEncounter: getCustomFieldValue(HelloAssoQuestions.ASSOCIATION_ENCOUNTER),
-        engagement: getCustomFieldValue(HelloAssoQuestions.ENGAGEMENT),
-      };
-    });
+        return {
+          id: helloAssoMember.id.toString(),
+          membershipDate: new Date(helloAssoMember.order.date).toISOString().slice(0, 10),
+          ...helloAssoMember.user,
+          sex: getCustomFieldValue(HelloAssoQuestions.SEX),
+          amount: (helloAssoMember.amount / 100).toFixed(2),
+          name: helloAssoMember.name,
+          type: helloAssoMember.name.includes('Dons')
+            ? MembershipType.DONATION
+            : MembershipType.MEMBERSHIP,
+          phoneNumber: getCustomFieldValue(HelloAssoQuestions.PHONE),
+          email: getCustomFieldValue(HelloAssoQuestions.EMAIL),
+          association: getCustomFieldValue(HelloAssoQuestions.ASSOCIATION)
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, ''),
+          firstMembership: getCustomFieldValue(HelloAssoQuestions.FIRST_MEMBERSHIP),
+          address: getCustomFieldValue(HelloAssoQuestions.ADDRESS),
+          zipCode: getCustomFieldValue(HelloAssoQuestions.ZIP_CODE),
+          birthDate: getCustomFieldValue(HelloAssoQuestions.BIRTH_DATE),
+          originCity: getCustomFieldValue(HelloAssoQuestions.ORIGIN_CITY),
+          lycee: getCustomFieldValue(HelloAssoQuestions.LYCEE),
+          universityName: getCustomFieldValue(HelloAssoQuestions.UNIVERSITY_NAME),
+          classePrepa: getCustomFieldValue(HelloAssoQuestions.CLASSE_PREPA),
+          activityField: getCustomFieldValue(HelloAssoQuestions.ACTIVITY_FIELD),
+          schoolAndTeachingSubject: getCustomFieldValue(
+            HelloAssoQuestions.SCHOOL_AND_TEACHING_SUBJECT,
+          ),
+          cursus: getCustomFieldValue(HelloAssoQuestions.CURSUS),
+          foreignInternship: getCustomFieldValue(HelloAssoQuestions.FOREIGN_INTERNSHIP),
+          career: getCustomFieldValue(HelloAssoQuestions.CAREER),
+          associationEncounter: getCustomFieldValue(HelloAssoQuestions.ASSOCIATION_ENCOUNTER),
+          engagement: getCustomFieldValue(HelloAssoQuestions.ENGAGEMENT),
+        };
+      });
   }
 
   private getCustomFieldValue(
