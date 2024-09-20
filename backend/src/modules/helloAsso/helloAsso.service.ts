@@ -79,7 +79,7 @@ export class HelloAssoService {
     );
     await this.cacheManager.set(MEMBERS_CACHE_KEY, JSON.stringify(data), { ttl: 3600 });
 
-    return data;
+    return data.filter((member) => member.ticketUrl === undefined);
   }
 
   async getAssociations(): Promise<string[]> {
@@ -94,7 +94,7 @@ export class HelloAssoService {
 
     members.forEach((member) => {
       const memberAssociation = trim(
-        member.customFields.find((customField) =>
+        member.customFields?.find((customField) =>
           HelloAssoQuestions.ASSOCIATION.includes(customField.name),
         )?.answer,
       )

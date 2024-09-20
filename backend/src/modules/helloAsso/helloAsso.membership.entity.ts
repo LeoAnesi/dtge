@@ -106,4 +106,5 @@ export interface HelloAssoMembershipEntity {
   type: 'Membership';
   initialAmount: number;
   state: 'Processed';
+  ticketUrl?: string;
 }
